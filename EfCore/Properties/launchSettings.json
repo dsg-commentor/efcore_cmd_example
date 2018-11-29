@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EfCore": {
+      "commandName": "Project",
+      "commandLineArgs": "-provider efcore"
+    }
+  }
+}
