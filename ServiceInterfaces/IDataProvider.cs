@@ -1,9 +1,9 @@
-﻿using EfCore.Entities;
+﻿using Data.Entities;
 using System.Collections.Generic;
 
-namespace EfCore.Interfaces
+namespace ServiceInterfaces
 {
-    interface IDataProvider
+    public interface IDataProvider
     {
         IEnumerable<Employee> GetAllEmployees();
         Employee AddEmployee(Employee employee);

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using EfCore.Entities;
-using EfCore.Interfaces;
+using Data.Entities;
+using ServiceInterfaces;
 using Newtonsoft.Json;
 
-namespace EfCore.Implementations
+namespace FileImpl
 {
-    class FileDataContext : IDataProvider
+    public class FileDataContext : IDataProvider
     {
         public Employee AddEmployee(Employee employee)
         {

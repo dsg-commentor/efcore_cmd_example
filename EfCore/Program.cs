@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
-using EfCore.Entities;
-using EfCore.Implementations;
-using EfCore.Interfaces;
+using Data.Entities;
+using EfCoreImpl;
+using FileImpl;
+using ServiceInterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

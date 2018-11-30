@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EfCore.Entities
+namespace Data.Entities
 {
     public class Company
     {

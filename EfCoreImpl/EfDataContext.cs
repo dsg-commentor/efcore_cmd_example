@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using EfCore.Entities;
-using EfCore.Interfaces;
+using Data.Entities;
+using ServiceInterfaces;
 
-namespace EfCore.Implementations
+namespace EfCoreImpl
 {
     public class EfDataContext : DbContext, IDataProvider
     {

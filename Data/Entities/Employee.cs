@@ -1,5 +1,5 @@
 ﻿
-namespace EfCore.Entities
+namespace Data.Entities
 {
     public class Employee
     {
