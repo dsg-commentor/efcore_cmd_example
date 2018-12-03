@@ -6,6 +6,7 @@ using FileImpl;
 using ServiceInterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoImpl;
 
 namespace EfCore
 {
@@ -20,21 +21,33 @@ namespace EfCore
 
             diContainer.AddSingleton(_ => builder.Build());
 
-            for (int i = 0; i < args.Length; i++)
+            try
             {
-                if (args[i] == "-provider")
+                for (int i = 0; i < args.Length; i++)
                 {
-                    var provider = args[i + 1];
-
-                    if (provider == "efcore")
+                    if (args[i] == "-provider")
                     {
-                        diContainer.AddDbContext<EfDataContext>();
-                        diContainer.AddSingleton<IDataProvider>(new EfDataContext(builder.Build().GetConnectionString("sql")));
-                    }
+                        var provider = args[i + 1];
 
-                    else if (provider == "file")
-                        diContainer.AddSingleton<IDataProvider, FileDataContext>();
+                        if (provider == "efcore")
+                        {
+                            diContainer.AddDbContext<EfDataContext>();
+                            diContainer.AddSingleton<IDataProvider>(new EfDataContext(builder.Build().GetConnectionString("sql")));
+                        }
+
+                        else if (provider == "mongodb")
+                        {
+                            diContainer.AddSingleton<IDataProvider>(new MongoDBContext(builder.Build().GetConnectionString("mongo"), isSSL: false));
+                        }
+
+                        else if (provider == "file")
+                            diContainer.AddSingleton<IDataProvider, FileDataContext>();
+                    }
                 }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Problem encountered parsing args. Check parameters");
             }
             _services = diContainer.BuildServiceProvider();
 
@@ -44,13 +57,12 @@ namespace EfCore
             while (!StopRunning);
         }
 
-
         private static void MainLoop()
         {
             Console.WriteLine("Please select an action");
             try
             {
-                char selection = Console.ReadKey().KeyChar.ToString().ToLower()[0];
+                char selection = Console.ReadLine().ToLower()[0];
                 Console.WriteLine();
                 switch (selection)
                 {
@@ -70,15 +82,16 @@ namespace EfCore
                         throw new ArgumentException();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error handling input");
+                Console.WriteLine("Error handling input:");
+                Console.WriteLine(ex);
             }
         }
 
         private static void Get()
         {
-            var employees =_services.GetService<IDataProvider>().GetAllEmployees();
+            var employees = _services.GetService<IDataProvider>().GetAllEmployees();
             foreach (var employee in employees)
             {
                 Console.WriteLine($"Id: {employee.EmployeeId}, Name: {employee.Name}, Title: {employee.Title}, Salary: {employee.Salary}");
@@ -98,11 +111,12 @@ namespace EfCore
                 Console.WriteLine("Salary $:");
                 var salary = Console.ReadLine();
 
-                _services.GetService<IDataProvider>().AddEmployee(new Employee { Name = name, Title = title, Salary = int.Parse(salary)});
+                _services.GetService<IDataProvider>().AddEmployee(new Employee { Name = name, Title = title, Salary = int.Parse(salary) });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error handling input:");
+                Console.WriteLine(ex);
                 MainLoop();
             }
         }
